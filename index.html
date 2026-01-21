@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Random People List (Colorful)</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            max-width: 600px; 
+            margin: 50px auto; 
+            padding: 30px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            min-height: 100vh;
+        }
+        h1 { 
+            text-align: center; 
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        #date { 
+            font-style: italic; 
+            text-align: center;
+            font-size: 1.2em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            color: #fff;
+        }
+        ul { 
+            list-style: none; 
+            padding: 0; 
+        }
+        li { 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 15px; 
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        li::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <h1>People List (Daily Random Order)</h1>
+    <p>Today's date: <span id="date"></span></p>
+    <ul id="peopleList"></ul>
+
+    <script>
+        // Define your list of people here (edit as needed)
+        const people = ['Pavana', 'Robert', 'Jonas', 'Michael', 'Johannes', 'Georges', 'Erik', 'Max'];
+
+        // Get current date as YYYY-MM-DD string for seeding
+        const today = new Date();
+        const dateStr = today.toISOString().split('T')[0];
+
+        // Display the date
+        document.getElementById('date').textContent = dateStr;
+
+        // Create a seeded shuffle (unchanged)
+        function seededShuffle(array, seedStr) {
+            const seed = array.length * (parseInt(seedStr.replace(/-/g, ''), 10) % 1000) + 1;
+            let m = array.length, t, i;
+            while (m) {
+                i = Math.floor(seed * Math.random() / seed); 
+                m -= 1;
+                t = array[m];
+                array[m] = array[i];
+                array[i] = t;
+            }
+            return array;
+        }
+
+        // Shuffle and display with colors
+        const shuffledPeople = seededShuffle([...people], dateStr);
+        const list = document.getElementById('peopleList');
+        shuffledPeople.forEach((person, index) => {
+            const li = document.createElement('li');
+            // Rainbow hue based on index (360deg color wheel)
+            const hue = (index * 360 / people.length + 120) % 360;  // Offset for better starting colors
+            li.style.background = `linear-gradient(135deg, hsl(${hue}, 70%, 60%), hsl(${hue + 30}, 70%, 50%))`;
+            li.style.color = `hsl(${hue + 180}, 20%, 95%)`;  // Contrasting text
+            li.style.textShadow = `2px 2px 4px hsla(0,0%,0%,0.5)`;
+            li.textContent = `👤 ${person}`;
+            list.appendChild(li);
+        });
+    </script>
+</body>
+</html>
