@@ -63,28 +63,31 @@
     <h1>People List (Daily Random Order)</h1>
     <p>Today's date: <span id="date"></span></p>
     <ul id="peopleList"></ul>
-
+    <script src="https://cdn.jsdelivr.net/npm/seedrandom@3.0.5/seedrandom.min.js"></script>
     <script>
         // Define your list of people here (edit as needed)
         const people = ['Pavana', 'Robert', 'Jonas', 'Michael', 'Johannes', 'Georges', 'Erik', 'Max'];
 
-        // Get current date as YYYY-MM-DD string for seeding
+        // Get current local date as YYYY-MM-DD string for seeding
         const today = new Date();
-        const dateStr = today.toISOString().split('T')[0];
+        const y = today.getFullYear();
+        const m = String(today.getMonth() + 1).padStart(2, '0');
+        const d = String(today.getDate()).padStart(2, '0');
+        const dateStr = `${y}-${m}-${d}`;  // Local date avoids UTC-based two-day repeats
+
+        // Log the date for debugging
+        console.log('Date for seeding:', dateStr);
 
         // Display the date
         document.getElementById('date').textContent = dateStr;
 
-        // Create a seeded shuffle (unchanged)
         function seededShuffle(array, seedStr) {
-            const seed = array.length * (parseInt(seedStr.replace(/-/g, ''), 10) % 1000) + 1;
-            let m = array.length, t, i;
-            while (m) {
-                i = Math.floor(seed * Math.random() / seed); 
-                m -= 1;
-                t = array[m];
-                array[m] = array[i];
-                array[i] = t;
+            const rand = new Math.seedrandom(seedStr);
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(rand() * (i + 1));
+                const tmp = array[i];
+                array[i] = array[j];
+                array[j] = tmp;
             }
             return array;
         }
